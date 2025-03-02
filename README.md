@@ -18,7 +18,7 @@ Currently, myCOVAS features a reactionary commentary-like feature, similar to th
     * API.txt - Needs an [elevenlabs api](https://elevenlabs.io/app/settings/api-keys) key to generate the voices
     * BGS.txt - This is the system ID for a single system that has BGS you want to monitor. The ID can be obtained from a <https://spansh.co.uk> url, for example, `10477373803` is the ID for the [Sol system](https://spansh.co.uk/system/10477373803)
     * BGS_Name.txt - This is simply with the name of the system, or the name you want myCOVAS to call the system (useful for colonised systems).
-    * VoiceID.txt - This is for the voice id of the elevenlabs voice you want to use. It can be obtained from an "ID" copy button wehn you view a voice's details.
+    * VoiceID.txt - This is for the voice id of the elevenlabs voice you want to use. It can be obtained from an "ID" copy button when you view a voice's details.
 6. Place .mp3 files into the music folder (generated after first run), these will play while you play the game.
 7. Place .mp3 files into the combat folder (generated after first run), these will play for some time once your ship receives hostile fire.
 8. Rename `lines.json.example` to `lines.json` and customise it as you see fit. Use <https://elite-journal.readthedocs.io> for how to name the journal titles.
