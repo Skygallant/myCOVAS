@@ -85,7 +85,6 @@ def play_random_music():
         music_file = music_queue.pop()
         pygame.mixer.music.load(os.path.join(current_music_dir, music_file))
         pygame.mixer.music.play()
-        adjust_music_volume(desired_volume)
         Song_timer = threading.Timer(pygame.mixer.Sound(os.path.join(current_music_dir, music_file)).get_length(), play_random_music)
         Song_timer.daemon = True
         Song_timer.start()
@@ -190,6 +189,7 @@ def plugin_start(plugin_dir):
     # Initialize pygame mixer
     pygame.mixer.init()
     play_random_music()
+    adjust_music_volume(desired_volume)
   
     # Start the BGS update timer
     BGS_timer = threading.Timer(5, BGS_update)
