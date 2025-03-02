@@ -1,0 +1,214 @@
+{
+  "JournalEntryTexts": {
+    "LoadGame": [
+      "You're back. Let's pick up where we left off.",
+      "There you are. Ready to continue?",
+      "Welcome back. Everything's good to go.",
+      "Didn't think you'd be gone for long. Let's do this.",
+      "The ship's waiting. Let's get moving."
+    ],
+    "Docked": [
+      "Docked and secure.",
+      "Touchdown complete.",
+      "Docking successful. Time to refuel and resupply.",
+      "Station docked. What's next?",
+      "A good call to stop here."
+    ],
+    "DockingRequested": [
+      "Requesting docking clearance.",
+      "Docking request sent.",
+      "Waiting for docking approval.",
+      "Permission requested. Stand by.",
+      "Docking inquiry submitted."
+    ],
+    "DockingGranted": [
+      "Docking permission granted.",
+      "Clearance received. Proceed to dock.",
+      "Docking approved. Landing pad assigned.",
+      "You're good to go. Docking sequence available.",
+      "Docking access confirmed."
+    ],
+    "DockingDenied": [
+      "Docking request denied.",
+      "No clearance granted.",
+      "Docking rejected. Try again later.",
+      "Access denied. No available space.",
+      "Docking refused. Situation unknown."
+    ],
+    "Undocked": [
+      "Leaving station. Stay safe.",
+      "Undocked and making waves.",
+      "Clearing port. Let's go.",
+      "Back into the black.",
+      "Engines steady. We're off."
+    ],
+    "Liftoff": [
+      "Lifting off.",
+      "Launch sequence complete.",
+      "Up and away.",
+      "Taking off. Smooth as always.",
+      "Departure confirmed."
+    ],
+    "Touchdown": [
+      "Landing complete.",
+      "Touchdown confirmed.",
+      "Ship secured on the surface.",
+      "A solid landing. Well done.",
+      "We're down. What's next?"
+    ],
+    "SupercruiseEntry": [
+      "Supercruise engaged.",
+      "Entering supercruise.",
+      "Cruising towards the next destination.",
+      "Supercruise activated.",
+      "Smooth entry into supercruise."
+    ],
+    "SupercruiseExit": [
+      "Supercruise exit complete.",
+      "Back to normal space.",
+      "Dropping from supercruise.",
+      "Exit confirmed. What's the plan?",
+      "Normal space reached."
+    ],
+    "FSDJump": [
+      "Jump complete. New system reached.",
+      "We've arrived in a new system.",
+      "Frame Shift complete. Ready for orders.",
+      "Another jump done. What's the next move?",
+      "System transition successful."
+    ],
+    "Location": [
+      "Current location logged.",
+      "We're here. What now?",
+      "Location confirmed.",
+      "New coordinates registered.",
+      "System details updated."
+    ],
+    "StartJump": [
+      "Charging Frame Shift Drive.",
+      "FSD spinning up.",
+      "Jump sequence initiated.",
+      "Stand by for system jump.",
+      "Jumping in progress."
+    ],
+    "FSSAllBodiesFound": [
+      "Scanning complete. Data logged.",
+      "Sensor sweep finished. No anomalies detected.",
+      "Analysis complete. Check your logs for details.",
+      "Scan registered. Let me know if you need more info.",
+      "Scans finalized. What's next?"
+    ],
+    "MissionAccepted": [
+      "Mission accepted. Let's see this through.",
+      "Task confirmed. Let's make it happen.",
+      "Mission logged. We'll get this done.",
+      "Understood. Stay focused and we'll handle it.",
+      "Assignment noted. Ready when you are."
+    ],
+    "MissionCompleted": [
+      "Mission accomplished. Well done.",
+      "Objective complete. Time to report back.",
+      "Success. Let's wrap things up.",
+      "All tasks fulfilled. Nicely handled.",
+      "Completion confirmed. Another job done."
+    ],
+    "MissionFailed": [
+      "Mission failed. We'll do better next time.",
+      "Not ideal, but we'll learn from it.",
+      "That didn't go as planned. Let's reassess.",
+      "We'll find another way. Don't worry.",
+      "Let's move on. There's always another chance."
+    ],
+    "MarketBuy": [
+      "Cargo inventory updated.",
+      "Manifest checked. Everything is accounted for.",
+      "Cargo status verified.",
+      "All shipments recorded. Ready for transport.",
+      "Cargo secured. Let's keep it safe."
+    ],
+    "Bounty": [
+      "Bounty claim recorded.",
+      "Reward collected. Let's move on.",
+      "Bounty registered. Another one down.",
+      "Your bounty is confirmed. Good work.",
+      "Payout complete. More credits for you."
+    ],
+    "DockingTimeout": [
+      "Docking request timed out. Let's try again.",
+      "No response from the station. Maybe give it another shot?",
+      "We waited too long. Docking clearance expired.",
+      "They didn't answer in time. Want to try again?",
+      "Looks like we missed our chance. Let's send another request."
+    ],
+    "EjectCargo": [
+      "Cargo released. Let's hope that was a good call.",
+      "Jettisoning cargo. Done.",
+      "Cargo dumped. Let's keep an eye on the radar.",
+      "Ejection complete. Hopefully, that won't come back to bite us.",
+      "Cargo is out. Hope you're sure about that."
+    ],
+    "Interdiction": [
+      "Someone's trying to pull us out. Hold steady.",
+      "Interdiction detected. Brace yourself.",
+      "We're being targeted. Do we fight or flee?",
+      "Interdiction in progress. Let's see how this plays out.",
+      "Keep your hands steady. This could get tricky."
+    ],
+    "EscapeInterdiction": [
+      "We slipped out of that one. Good flying.",
+      "Managed to shake them. Nice work.",
+      "That was close, but we're clear now.",
+      "We avoided the interdiction. Back to our route.",
+      "Good job. They won't catch us that easily."
+    ],
+    "Died": [
+      "That didn't go well. Let's get back out there.",
+      "We'll recover from this. Just a setback.",
+      "Respawning. We'll try again.",
+      "We lost this one. But there's always another chance.",
+      "That's a tough loss. Ready to get back at it?"
+    ],
+    "PowerplayJoin": [
+      "You've joined a power faction. Let's see what they offer.",
+      "New allegiance confirmed. Let's get to work.",
+      "Powerplay engaged. This could be interesting.",
+      "We're part of something bigger now.",
+      "Aligned with a faction. Let's see where this leads."
+    ],
+    "PowerplayLeave": [
+      "You've left your faction. Time to go solo.",
+      "No more powerplay ties. We're independent now.",
+      "You're free of that faction. On to new things.",
+      "No more obligations. Let's chart our own course.",
+      "Faction ties cut. Moving forward."
+    ],
+    "MultiSellExplorationData": [
+      "Exploration data sold. Credits added.",
+      "Data exchange complete. Profits incoming.",
+      "Survey results sold. Hope it was worth it.",
+      "Exploration findings transferred. Let's check our balance.",
+      "Sold off the data. Good work out there."
+    ],
+    "ShipyardTransfer": [
+      "Ship transfer initiated. It'll be here soon.",
+      "Bringing your ship to this station.",
+      "Transfer request sent. Just need to wait now.",
+      "Your ship is en route to our location.",
+      "Ship transfer in progress. Let's track the arrival time."
+    ],
+    "RefuelAll": [
+      "Full refuel complete.",
+      "Tanks topped off.",
+      "Fuel reserves maxed.",
+      "All set with fuel.",
+      "Ship refueled and ready."
+    ],
+    "RefuelPartial": [
+      "Partial refuel complete.",
+      "Some fuel added.",
+      "Topped up just enough.",
+      "Minimal refueling done.",
+      "Fuel levels improved."
+    ]
+  }
+}
