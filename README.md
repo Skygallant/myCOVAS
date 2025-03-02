@@ -2,9 +2,9 @@
 A full AI-driven COVAS replacement and music player for Elite: Dangerous by FDev
 
 # Requirements
-an elevenlabs account.
-a working local Python installation with pip.
-a copy of EDMC running from source.
+an elevenlabs account.  
+a working local Python installation with pip.  
+a copy of EDMC running from source.  
 
 # Features
 Currently, myCOVAS features a reactionary commentary-like feature, similar to the regular covas, that can be customised to say anything in relation to any journal entry. It also has a music player, with auto-ducking for when the AI wants to say something, and it will change to combat music where appropriate. BGS monitoring of a single system is supported, myCOVAS will give a news report every 5 minutes (as long as the news report would be different from the previous).
