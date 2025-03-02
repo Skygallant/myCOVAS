@@ -7,12 +7,13 @@ a working local Python installation with pip.
 a copy of EDMC running from source.  
 
 # Features
-Currently, myCOVAS features a reactionary commentary-like feature, similar to the regular covas, that can be customised to say anything in relation to any journal entry. It also has a music player, with auto-ducking for when the AI wants to say something, and it will change to combat music where appropriate. BGS monitoring of a single system is supported, myCOVAS will give a news report every 5 minutes (as long as the news report would be different from the previous).
+Currently, myCOVAS features a reactionary commentary-like feature, similar to the regular covas, that can be customised to say anything in relation to any journal entry. It also has a music player, with auto-ducking for when the AI wants to say something, and it will change to combat music where appropriate. BGS monitoring of a single system is supported, myCOVAS will give these news report every 5 minutes (as long as the news report would be different from the previous).
 
 # Instructions
-1. Install Python
+1. Install Python and pip
+    * Make sure the Python directory and the Python\Scripts directory are on PATH (close are reopen your terminal to apply PATH changes)
 2. do `pip install pygame`
-3. make sure you run EDMC from source given these instructions <https://github.com/EDCD/EDMarketConnector/wiki/Running-from-source>
+3. make sure you run EDMC from source as outlined in these instructions <https://github.com/EDCD/EDMarketConnector/wiki/Running-from-source>
 4. Open EDMC, go to the plugins tab, and open your plugins folder. Then do `git clone https://github.com/Skygallant/myCOVAS.git`
 5. Some setup is required in the form of 4 .txt files which you must create manually:
     * API.txt - Needs an [elevenlabs api](https://elevenlabs.io/app/settings/api-keys) key to generate the voices
