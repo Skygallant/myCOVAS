@@ -7,12 +7,27 @@ import time
 import pygame
 import hashlib
 import sys
+import queue
 
-desired_volume = 50
-plugin_dir = os.path.dirname(os.path.abspath(__file__))
-
-# EDMC Plugin API for Python 3 Migration
 EDMC_VERSION = "4.0"
+myCOVAS_queue = queue.Queue()
+desired_volume = 40
+plugin_dir = os.path.dirname(os.path.abspath(__file__))
+ELEVENLABS_API_KEY = ""
+ELEVENLABS_VOICE_ID = ""
+BGS_SYSTEM_ID = ""
+BGS_SYSTEM_NAME = ""
+ELEVENLABS_API_URL = ""
+music_queue = []
+CACHE_DIR = ""
+MUSIC_DIR = ""
+COMBAT_MUSIC_DIR = ""
+current_music_dir = ""
+under_attack_timer = None
+BGS_timer = None
+Song_timer = None
+Old_BGS = ""
+journal_lines = ""
 
 # Open log file
 log_file = open(os.path.join(plugin_dir, "myCOVAS.log"), "w", encoding="utf-8", buffering=1)
@@ -29,42 +44,10 @@ def load_file_content(filename):
         print(f"Error: {filename} not found. Make sure it exists in the plugin directory.")
         return None
 
-ELEVENLABS_API_KEY = load_file_content("API.txt")
-ELEVENLABS_VOICE_ID = load_file_content("VoiceID.txt")
-BGS_SYSTEM_ID = load_file_content("BGS.txt")
-BGS_SYSTEM_NAME = load_file_content("BGS_Name.txt")
-
-# Validate API key and voice ID
-if not ELEVENLABS_API_KEY or not ELEVENLABS_VOICE_ID:
-    raise ValueError("Missing API Key or Voice ID. Please ensure API.txt and VoiceID.txt are properly set up.")
-
-ELEVENLABS_API_URL = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
-
-# Load the journal entry mappings
-lines_json_path = os.path.join(plugin_dir, "lines.json")
-with open(lines_json_path, "r", encoding="utf-8") as file:
-    journal_lines = json.load(file)["JournalEntryTexts"]
-
-# Ensure cache and music directories exist
-CACHE_DIR = os.path.join(plugin_dir, "cache")
-MUSIC_DIR = os.path.join(plugin_dir, "music")
-COMBAT_MUSIC_DIR = os.path.join(plugin_dir, "combat")
-os.makedirs(CACHE_DIR, exist_ok=True)
-os.makedirs(MUSIC_DIR, exist_ok=True)
-os.makedirs(COMBAT_MUSIC_DIR, exist_ok=True)
-
-current_music_dir = MUSIC_DIR
-under_attack_timer = None
-BGS_timer = None
-Old_BGS = ""
-
-# Initialize pygame mixer
-pygame.mixer.init()
-
 def process_voice_line(text):
     """Handles playing the voice line with proper caching and volume control."""
     pygame.mixer.stop()  # Stop any currently playing voice lines
-    adjust_music_volume(desired_volume * 0.5)  # Reduce music volume by 50%
+    adjust_music_volume(desired_volume * 0.35)  # Reduce music volume by 35%
     hashed_text = hashlib.sha256(text.encode()).hexdigest()
     audio_path = os.path.join(CACHE_DIR, f"{hashed_text}.mp3")
     
@@ -93,22 +76,22 @@ def process_voice_line(text):
     pygame.time.wait(int(pygame.mixer.Sound(audio_path).get_length() * 1000))
     adjust_music_volume(desired_volume)  # Restore music volume
 
-music_queue = []
 def play_random_music():
     """Continuously plays random music files from the current music directory using pygame."""
-    global current_music_dir, music_queue
-    while True:
-        if not music_queue:
-            music_queue = [f for f in os.listdir(current_music_dir) if f.endswith(".mp3")]
-            random.shuffle(music_queue)  # Shuffle only when queue is empty
+    global current_music_dir, music_queue, Song_timer
+    if not music_queue:
+        music_queue = [f for f in os.listdir(current_music_dir) if f.endswith(".mp3")]
+        random.shuffle(music_queue)  # Shuffle only when queue is empty
+
+    if music_queue:
+        music_file = music_queue.pop()
+        pygame.mixer.music.load(os.path.join(current_music_dir, music_file))
+        pygame.mixer.music.play()
+        adjust_music_volume(desired_volume)
+        Song_timer = threading.Timer((int(pygame.mixer.Sound(os.path.join(current_music_dir, music_file)).get_length() * 1000)), play_random_music)
+        Song_timer.daemon = True
+        Song_timer.start()
         
-        if music_queue:
-            music_file = music_queue.pop()
-            pygame.mixer.music.load(os.path.join(current_music_dir, music_file))
-            pygame.mixer.music.play()
-            adjust_music_volume(desired_volume)
-            while pygame.mixer.music.get_busy():
-                pygame.time.wait(100)  # Waits 100 milliseconds before checking again
 
 def switch_to_combat_music():
     """Switches the music directory to combat music for 2 minutes."""
@@ -146,7 +129,9 @@ def BGS_update():
         process_voice_line(f"News update for the {BGS_SYSTEM_NAME} system.")
         for faction in Old_BGS:
             process_voice_line(f"{faction['name']} currently control {faction['influence']:.0%} of the system and are in a state of {faction['state']}")
+    
     BGS_timer = threading.Timer(300, BGS_update)
+    BGS_timer.daemon = True
     BGS_timer.start()
     
 
@@ -157,6 +142,7 @@ def adjust_music_volume(change):
 
 def journal_entry(cmdr, is_beta, system, station, entry, state):
     """Handles incoming journal events."""
+    global journal_lines
     event_type = entry.get("event")
     if event_type == "UnderAttack":
         switch_to_combat_music()
@@ -165,7 +151,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         if text_options:
             text = random.choice(text_options)
         if text:
-            process_voice_line(text)
+            myCOVAS_queue.put(text)
 
 def plugin_start3(plugin_dir):
     """Called when the plugin is loaded in Python 3 mode."""
@@ -173,13 +159,65 @@ def plugin_start3(plugin_dir):
 
 def plugin_start(plugin_dir):
     """Called when the plugin is loaded."""
-    global music_thread, BGS_timer
-    music_thread = threading.Thread(target=play_random_music, daemon=True)
-    music_thread.start()
-    BGS_timer = threading.Timer(300, BGS_update)
+    global journal_lines, ELEVENLABS_API_URL, BGS_timer, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, BGS_SYSTEM_ID, BGS_SYSTEM_NAME, CACHE_DIR, MUSIC_DIR, COMBAT_MUSIC_DIR, current_music_dir
+
+    ELEVENLABS_API_KEY = load_file_content("API.txt")
+    ELEVENLABS_VOICE_ID = load_file_content("VoiceID.txt")
+    BGS_SYSTEM_ID = load_file_content("BGS.txt")
+    BGS_SYSTEM_NAME = load_file_content("BGS_Name.txt")
+
+    # Validate API key and voice ID
+    if not ELEVENLABS_API_KEY or not ELEVENLABS_VOICE_ID:
+        raise ValueError("Missing API Key or Voice ID. Please ensure API.txt and VoiceID.txt are properly set up.")
+  
+    ELEVENLABS_API_URL = ""f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
+
+    # Ensure cache and music directories exist
+    CACHE_DIR = os.path.join(plugin_dir, "cache")
+    MUSIC_DIR = os.path.join(plugin_dir, "music")
+    COMBAT_MUSIC_DIR = os.path.join(plugin_dir, "combat")
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    os.makedirs(MUSIC_DIR, exist_ok=True)
+    os.makedirs(COMBAT_MUSIC_DIR, exist_ok=True)
+
+    current_music_dir = MUSIC_DIR
+
+    # Load the journal entry mappings
+    lines_json_path = os.path.join(plugin_dir, "lines.json")
+    with open(lines_json_path, "r", encoding="utf-8") as file:
+        journal_lines = json.load(file)["JournalEntryTexts"]
+      
+    # Initialize pygame mixer
+    pygame.mixer.init()
+    play_random_music()
+  
+    # Start the BGS update timer
+    BGS_timer = threading.Timer(5, BGS_update)
+    BGS_timer.daemon = True
     BGS_timer.start()
+  
     return "myCOVAS"
 
 def plugin_stop():
     """Called when the plugin is unloaded."""
+    global BGS_timer, under_attack_timer, Song_timer
+
+    print("Stopping myCOVAS plugin...")
+
+    # Stop music and quit Pygame safely
     pygame.mixer.music.stop()
+    pygame.mixer.quit()
+
+    if BGS_timer:
+        BGS_timer.cancel()
+        BGS_timer = None
+
+    if under_attack_timer:
+        under_attack_timer.cancel()
+        under_attack_timer = None
+
+    if Song_timer:
+        Song_timer.cancel()
+        Song_timer = None
+
+    print("myCOVAS plugin has been stopped.")
