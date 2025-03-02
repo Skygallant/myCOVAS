@@ -7,10 +7,8 @@ import time
 import pygame
 import hashlib
 import sys
-import queue
 
 EDMC_VERSION = "4.0"
-myCOVAS_queue = queue.Queue()
 desired_volume = 40
 plugin_dir = os.path.dirname(os.path.abspath(__file__))
 ELEVENLABS_API_KEY = ""
@@ -88,7 +86,7 @@ def play_random_music():
         pygame.mixer.music.load(os.path.join(current_music_dir, music_file))
         pygame.mixer.music.play()
         adjust_music_volume(desired_volume)
-        Song_timer = threading.Timer((int(pygame.mixer.Sound(os.path.join(current_music_dir, music_file)).get_length() * 1000)), play_random_music)
+        Song_timer = threading.Timer(pygame.mixer.Sound(os.path.join(current_music_dir, music_file)).get_length(), play_random_music)
         Song_timer.daemon = True
         Song_timer.start()
         
@@ -97,6 +95,7 @@ def switch_to_combat_music():
     """Switches the music directory to combat music for 2 minutes."""
     global current_music_dir, under_attack_timer
     if current_music_dir != COMBAT_MUSIC_DIR:
+        music_queue = []
         pygame.mixer.music.fadeout(500)  # Fadeout the current song
     current_music_dir = COMBAT_MUSIC_DIR
     if under_attack_timer:
@@ -107,6 +106,7 @@ def switch_to_combat_music():
 def restore_music():
     """Restores the normal music directory."""
     global current_music_dir
+    music_queue = []
     pygame.mixer.music.fadeout(2000)  # Fadeout the current song
     current_music_dir = MUSIC_DIR
 
@@ -151,7 +151,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         if text_options:
             text = random.choice(text_options)
         if text:
-            myCOVAS_queue.put(text)
+            process_voice_line(text)
 
 def plugin_start3(plugin_dir):
     """Called when the plugin is loaded in Python 3 mode."""
