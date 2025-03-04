@@ -89,14 +89,22 @@ def play_random_music():
         Song_timer.daemon = True
         Song_timer.start()
         
+def mixtape_swap():
+    """faciliates swapping between different playlists"""
+    global Song_timer, music_queue
+    if Song_timer:
+        Song_timer.cancel()
+        Song_timer = None
+    music_queue = []
+    pygame.mixer.music.fadeout(1000)  # Fadeout the current song
+    play_random_music()
 
 def switch_to_combat_music():
     """Switches the music directory to combat music for 2 minutes."""
     global current_music_dir, under_attack_timer
     if current_music_dir != COMBAT_MUSIC_DIR:
-        music_queue = []
-        pygame.mixer.music.fadeout(500)  # Fadeout the current song
-    current_music_dir = COMBAT_MUSIC_DIR
+        current_music_dir = COMBAT_MUSIC_DIR
+        mixtape_swap()
     if under_attack_timer:
         under_attack_timer.cancel()
     under_attack_timer = threading.Timer(120, restore_music)
@@ -105,9 +113,8 @@ def switch_to_combat_music():
 def restore_music():
     """Restores the normal music directory."""
     global current_music_dir
-    music_queue = []
-    pygame.mixer.music.fadeout(2000)  # Fadeout the current song
     current_music_dir = MUSIC_DIR
+    mixtape_swap()
 
 def BGS_update():
     """Polls Spansh API and determines BGS news."""
