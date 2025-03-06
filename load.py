@@ -107,7 +107,7 @@ def switch_to_combat_music():
         mixtape_swap()
     if under_attack_timer:
         under_attack_timer.cancel()
-    under_attack_timer = threading.Timer(120, restore_music)
+    under_attack_timer = threading.Timer(180, restore_music)
     under_attack_timer.start()
 
 def restore_music():
@@ -152,7 +152,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
     event_type = entry.get("event")
     if event_type == "UnderAttack":
         switch_to_combat_music()
-    elif event_type in journal_lines:
+    if event_type in journal_lines:
         text_options = journal_lines.get(event_type, [])
         if text_options:
             text = random.choice(text_options)
