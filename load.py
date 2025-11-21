@@ -45,9 +45,13 @@ codex_overlay_client = None
 codex_overlay_last_text = ""
 codex_overlay_msgid = "mycovas-codex-main"
 codex_overlay_center_x = 640
-codex_overlay_center_y = 40
+codex_overlay_center_y = 20
 codex_overlay_timer = None
 codex_target_system = ""
+overlay_grouping_registered = False
+overlay_grouping_attempts = 0
+overlay_grouping_max_attempts = 5
+overlay_grouping_retry_delay = 5  # seconds
 CANONN_API_BASE = "https://us-central1-canonn-api-236217.cloudfunctions.net/query"
 CANONN_DUMPR_BASE = "https://storage.googleapis.com/canonn-downloads/dumpr"
 
@@ -239,6 +243,45 @@ def copy_to_clipboard(text):
         logger.info(f"Copied to clipboard: {text}")
     except Exception as e:
         logger.error(f"Failed to copy to clipboard: {e}")
+
+
+def try_register_overlay_grouping():
+    """Attempt to register ModernOverlay grouping, retrying if the API isn't ready yet."""
+    global overlay_grouping_registered, overlay_grouping_attempts
+    if overlay_grouping_registered:
+        return
+
+    overlay_grouping_attempts += 1
+    try:
+        from overlay_plugin.overlay_api import define_plugin_group  # type: ignore
+
+        # Top-level plugin group + matching prefixes
+        define_plugin_group(
+            plugin_group="myCOVAS",
+            matching_prefixes=["mycovas-"],
+        )
+        # Codex target group anchored at top; justification is handled by overlay_groupings.json
+        define_plugin_group(
+            plugin_group="myCOVAS",
+            id_prefix_group="Codex Target",
+            id_prefixes=["mycovas-codex-"],
+            id_prefix_group_anchor="top",
+        )
+        overlay_grouping_registered = True
+        logger.info("Registered ModernOverlay grouping for myCOVAS.")
+    except Exception as e:
+        if overlay_grouping_attempts < overlay_grouping_max_attempts:
+            delay = overlay_grouping_retry_delay
+            logger.info(
+                f"ModernOverlay API not available yet (attempt {overlay_grouping_attempts}); retrying in {delay}s."
+            )
+            t = threading.Timer(delay, try_register_overlay_grouping)
+            t.daemon = True
+            t.start()
+        else:
+            logger.warning(
+                f"ModernOverlay grouping registration skipped after {overlay_grouping_attempts} attempts: {e}"
+            )
 
 
 def nearest_codex_worker(cmdr, star_pos, star_system, show_overlay, copy_system_flag, source_event):
@@ -496,31 +539,8 @@ def plugin_start(plugin_dir):
     os.makedirs(COMBAT_MUSIC_DIR, exist_ok=True)
     os.makedirs(CODEX_DIR, exist_ok=True)
 
-    # Register Modern Overlay grouping via its public API when available.
-    # This keeps overlay_groupings.json in sync without manual edits.
-    try:
-        from overlay_plugin.overlay_api import define_plugin_group, PluginGroupingError  # type: ignore
-
-        try:
-            # Top-level plugin group + matching prefixes
-            define_plugin_group(
-                plugin_group="myCOVAS",
-                matching_prefixes=["mycovas-"],
-            )
-            # Codex target group: anchored at top, ModernOverlay handles centering
-            define_plugin_group(
-                plugin_group="myCOVAS",
-                id_prefix_group="Codex Target",
-                id_prefixes=["mycovas-codex-"],
-                id_prefix_group_anchor="center",
-                payload_justification="center",
-            )
-            logger.info("Registered ModernOverlay grouping for myCOVAS.")
-        except PluginGroupingError as e:
-            logger.error(f"Failed to register ModernOverlay grouping: {e}")
-    except Exception:
-        # If ModernOverlay isn't installed or API isn't available, skip gracefully.
-        logger.info("EDMC-ModernOverlay API not available; skipping overlay grouping registration.")
+    # Kick off Modern Overlay grouping registration; retries if API isn't available yet.
+    try_register_overlay_grouping()
 
     # Initialise EDMCOverlay client if available so we can show nearest-codex info
     if EDM_COVAS_OVERLAY_AVAILABLE and edmcoverlay is not None:
