@@ -462,7 +462,7 @@ def get_nearest_undiscovered_codex(cmdr, star_pos):
 
 def journal_entry(cmdr, is_beta, system, station, entry, state):
     """Handles incoming journal events."""
-    global journal_lines
+    global journal_lines, under_attack_timer
     event_type = entry.get("event")
 
     # Toggle music when the commander sends "/music" to the local chat channel
@@ -500,6 +500,12 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
                     daemon=True,
                 ).start()
                 return
+
+    if event_type == "Location" and current_music_dir == COMBAT_MUSIC_DIR:
+        if under_attack_timer:
+            under_attack_timer.cancel()
+            under_attack_timer = None
+        restore_music()
 
     if event_type == "UnderAttack":
         switch_to_combat_music()
