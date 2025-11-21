@@ -513,6 +513,7 @@ def plugin_start(plugin_dir):
                 id_prefix_group="Codex Target",
                 id_prefixes=["mycovas-codex-"],
                 id_prefix_group_anchor="center",
+                payload_justification="center",
             )
             logger.info("Registered ModernOverlay grouping for myCOVAS.")
         except PluginGroupingError as e:
