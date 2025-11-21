@@ -266,6 +266,7 @@ def try_register_overlay_grouping():
             id_prefix_group="Codex Target",
             id_prefixes=["mycovas-codex-"],
             id_prefix_group_anchor="top",
+            payload_justification="center",
         )
         overlay_grouping_registered = True
         logger.info("Registered ModernOverlay grouping for myCOVAS.")
